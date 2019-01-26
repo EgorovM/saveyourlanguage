@@ -1,0 +1,148 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html>
+	<head>
+        <meta charset= "utf-8">
+        <title>Республиканский лицей интернат</title>
+        
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+    </head>
+
+    <body>
+    	<header>
+			<nav>
+				<div class="nav-wrapper green" style="position: relative;">
+					<div class = "container">
+						<a href="/feed" class="brand-logo">Республиканский лицей интернат</a>
+
+						<ul id="nav-mobile" class="right hide-on-med-and-down">
+							<li><a class="dropdown-button" href="#!" data-activates="dropdown1" data-beloworigin="true" style="min-width: 150px;">{{ profile.name }} <i class="material-icons right"> arrow_drop_down </i></a></li>		
+						</ul>
+					</div>
+				</div>
+
+				<ul id="dropdown1" class="dropdown-content">
+					<li><a href="/profile/{{profile.id}}">Мой профиль</a></li>
+					<li class="divider"></li>
+					<li><a href="/settings">Редактировать</a></li>
+					<li><a href="#!">Настройки</a></li>
+					<li class="divider"></li>
+					<li><a href="/logout">Выйти</a></li>
+				</ul>
+			</nav>
+
+    	</header>
+
+    	<main>
+    		<div class = "container">
+	    		<div class = "row screen_mode">
+					<div style="padding-right: 20px;padding-left: 20px;">
+						<h5 class = "h3" style="margin-left:12px"> Настройки </h5>
+						<br>
+						<div class = "row">
+							<div class = "col s10">
+
+								<div class="row">
+									<div class="col s12">
+										<ul class="tabs">
+											<li class="tab"><a href="/settings.php" onclick="location='/settings';"  class = "grey-text lighten-5" style="font-size: 12px;">Аккаунт</a></li>
+											<li class="tab"><a href="/picture.php" onclick="location='/picture';" class = "grey-text lighten-5" style="font-size: 12px">Фото профиля</a></li>
+											<li class="tab" style="display: none"><a class = "active"></a></li>
+										</ul>
+									</div>
+								</div>
+
+								<div class = "row">
+									<div class = "col s9 offset-s1">
+										<form action="." method="post" enctype="multipart/form-data">
+											{% csrf_token %}
+											<div class="row form-group">
+												<div class = "col s3 ">
+													<p class = "right">Текущий аватар</p>
+												</div>
+
+												<div class="input-field col s9">
+													<div class = "col s12" style="position: relative; height: 90px">
+														<div  style="background-image: url(/media/{{profile.photo}}); background-size: cover;background-position: center; position: absolute; height: 140px; width: 140px; z-index: 100; border-radius: 100%; border: 3px solid white;"></div>
+													</div>
+												</div>
+											</div>
+
+											<div class="row form-group">
+												<div class = "col s3">
+													<p class = "right">Новый аватар </p>
+												</div>
+
+												<div class="input-field col s9">
+
+													<div class="file-field input-field">
+														<div class="btn green">
+															<span><strong>File</strong></span>
+															<input type="file" name="image" accept="image/*">
+														</div>
+															<div class="file-path-wrapper">
+															<input class="file-path validate" type="text" value="{{profile.photo}}">
+														</div>
+													</div>
+												</div>
+											</div>
+
+
+											<div class="input-field col s9 offset-s3">
+												<input class="green btn" type="submit" name = "ok_button" value = "Сохранить изменения">
+											</div>
+
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	    </main>
+
+		<footer class="page-footer green">
+		   <div class="container">
+		            <p></p>
+		    </div>
+		</footer>
+
+    </body>
+   
+
+
+	<script type="text/javascript">
+		$('.dropdown-button2').dropdown({
+		      inDuration: 300,
+		      outDuration: 225,
+		      constrain_width: false, // Does not change width of dropdown to that of the activator
+		      hover: true, // Activate on hover
+		      gutter: ($('.dropdown-content').width()*3)/2.5 + 5, // Spacing from edge
+		      belowOrigin: false, // Displays dropdown below the button
+		      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+		    }
+			);
+
+		$(document).ready(function(){
+	    	$('.tabs').tabs();
+	    });
+	</script>
+
+	{% if error_message != None %}
+    	<script type="text/javascript">
+    		M.toast({html: '{{ error_message }}'})
+    	</script>
+    {% endif %}
+
+
+</html>

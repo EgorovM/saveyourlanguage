@@ -1,0 +1,133 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html>
+	<head>
+        <meta charset= "utf-8">
+        <title>Республиканский лицей интернат</title>
+        
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+    </head>
+
+    <body>
+    	<header>
+			<nav>
+				<div class="nav-wrapper green" style="position: relative;">
+					<div class = "container">
+						<a href="/feed" class="brand-logo">Республиканский лицей интернат</a>
+
+						<ul id="nav-mobile" class="right hide-on-med-and-down">
+							<li><a class="dropdown-button" href="#!" data-activates="dropdown1" data-beloworigin="true" style="min-width: 150px;">{{ profile.name }} <i class="material-icons right"> arrow_drop_down </i></a></li>		
+						</ul>
+					</div>
+				</div>
+
+				<ul id="dropdown1" class="dropdown-content">
+					<li><a href="/profile/{{profile.id}}">Мой профиль</a></li>
+					<li class="divider"></li>
+					<li><a href="/settings">Редактировать</a></li>
+					<li><a href="#!">Настройки</a></li>
+					<li class="divider"></li>
+					<li><a href="/logout">Выйти</a></li>
+				</ul>
+			</nav>
+
+    	</header>
+
+    	<main>
+    		<div class = "container">
+				<div class = "row">
+					<div style="padding-right: 20px;padding-left: 20px;">
+						<h5 class = "h3" style="margin-left:12px"> Настройки </h5>
+						<br>
+						<div class = "row">
+							<div class = "col s10">
+								
+
+								<div class = "row">
+									<div class = "col s9 offset-s1">
+										<form action = "." method = "post">
+											{% csrf_token %}
+											<div class="row form-group">
+												<div class = "col s3">
+													<p class = "right">Фамилия Имя</p>
+												</div>
+
+												<div class="input-field col s9">
+													<input id="text" name = "name" type="text" class="validate" value="{{profile.name}}">
+												</div>
+											</div>
+
+											<div class="row form-group">
+												<div class = "col s3">
+													<p class = "right"> Номер телефона </p>
+												</div>
+
+												<div class="input-field col s9">
+													<input id="text" name = "telephone"  type="text" class="validate" value="{{profile.telephone}}">
+													<span class="helper-text">Как с вами можно связаться</span>
+												</div>
+											</div>
+
+											<div class="row form-group">
+												<div class = "col s3">
+													<p class = "right"> Email </p>
+												</div>
+
+												<div class="input-field col s9">
+													<input id="text" name = "email"  type="email" class="validate" value="{{profile.user.email}}">
+												</div>
+											</div>
+
+											<div class="input-field col s9 offset-s3">
+												<input class="btn green" type = "submit" name = "ok_button" value = "Сохранить изменения">
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	    </main>
+
+		<footer class="page-footer green">
+		   <div class="container">
+		            <p></p>
+		    </div>
+		</footer>
+
+    </body>
+   
+
+
+	<script type="text/javascript">
+		$('.dropdown-button2').dropdown({
+		      inDuration: 300,
+		      outDuration: 225,
+		      constrain_width: false, // Does not change width of dropdown to that of the activator
+		      hover: true, // Activate on hover
+		      gutter: ($('.dropdown-content').width()*3)/2.5 + 5, // Spacing from edge
+		      belowOrigin: false, // Displays dropdown below the button
+		      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+		    }
+			);
+	</script>
+
+	{% if error_message != None %}
+    	<script type="text/javascript">
+    		M.toast({html: '{{ error_message }}'})
+    	</script>
+    {% endif %}
+
+
+</html>

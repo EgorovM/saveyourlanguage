@@ -1,0 +1,280 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html>
+	<head>
+        <meta charset= "utf-8">
+        <title>Республиканский лицей интернат</title>
+        
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    </head>
+
+    <body>
+    	<div class = "screen_mode">
+	    	<header>
+				<nav>
+					<div class="nav-wrapper green" style="position: relative;">
+						<div class = "container">
+							<a href="/feed" class="brand-logo">Республиканский лицей интернат</a>
+
+							<ul id="nav-mobile" class="right hide-on-med-and-down">
+								<li><a class="dropdown-button" href="#!" data-activates="dropdown" data-beloworigin="true" style="min-width: 150px;">{{ profile.name }} <i class="material-icons right"> arrow_drop_down </i></a></li>		
+							</ul>
+						</div>
+					</div>
+				</nav>
+
+				<ul id="dropdown" class="dropdown-content">
+					<li><a href="/profile/{{profile.id}}">Мой профиль</a></li>
+					<li class="divider"></li>
+					<li><a href="/settings">Редактировать</a></li>
+					<li><a href="#!">Настройки</a></li>
+					<li class="divider"></li>
+					<li><a href="/logout">Выйти</a></li>
+				</ul>
+
+	    	</header>
+
+	    	<main>
+	    		
+	    		<div class = "container" style="margin-top: 10px">
+					<div class = "row " style="">
+						<div class = "col s2" style="">
+							<p><a href="/profile/{{profile.id}}"> <i class = "material-icons left">home</i> Моя страница</a> </p>
+							<p><a href="/feed"> <i class = "material-icons left">dehaze</i> Лента </a></p>
+							<p><a href="/news"> <i class = "material-icons left">info</i> Новости </a></p>
+							<p><a href="/work"> <i class = "material-icons left">work</i> Вакансии </a></p>
+							<p><a href="/group"> <i class = "material-icons left">group</i> Группы </a></p>
+						</div>
+
+						<div class = "col s7">
+							{% if user.profile.status == "moderator" %}
+								<div class = "col s12 white" style="border-radius: 1%; border:1px solid #ddd; margin-bottom: 10px">
+									<form action = "." method = "post">
+				    					{% csrf_token %}
+										<div class="row">
+											<div class="input-field col s12">
+											<textarea class="materialize-textarea" type = "text" name = "new_post_text" class="materialize-textarea"></textarea>
+											<label for="textarea1">Что расскажете?</label>
+											</div>
+
+											<input class="btn green right" type = "submit" name = "ok_button" value = "Отправить" style="margin-right: 10px">
+										</div>
+									</form>
+								</div>
+							{% endif %}
+
+							{% for post in posts%}
+								<div class = "col s12 white" style="border-radius: 1%; border:1px solid #ddd; margin-top: 10px; margin-bottom: 10px">
+									<div class = "row" style="margin-right: 10px;margin-left: 10px ">
+										<div class = "row" style=" margin-bottom: 0">
+											<div class = "row">
+												<div style="position: relative; width: 48px; float:left">
+													<img class = "right" src = "/media/images/goverment.jpg" style="width: 48px;height: 48px; border-radius: 100%; position: absolute; left:20px; top:13px; object-fit: cover;">
+												</div>
+												<div class = "col s7 left" style=" margin-left: 66px ">
+													<p>Правительство РЛ <br><font class = "grey-text left">{{post.data}}</font></p>
+												</div>
+												<div class = "col s3 right">
+													{% if profile.status == "moderator"%}
+														<form action = "." method="post">
+															{% csrf_token %}
+															<br>
+															<input type="text" name="post_id" value="{{post.id}}" style="display: none">
+															<input class="btn red right" type = "submit" name = "delete" value = "Удалить" style="min-width: 120px">
+														</form>
+													{% endif%}
+												</div>
+											</div>
+
+
+										</div>
+										<textarea class="materialize-textarea" readonly>{{post.text}}
+
+										</textarea>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+
+						<div class = "white col s3 right" style="border-radius: 1%; border:1px solid #ddd;">
+							<h6 class = "center">Понедельник</h6>
+							<ul>
+								<li> Окно </li>
+								<li> Физика </li>
+								<li> Алгебра </li>
+								<li> История </li>
+							</ul>
+							<hr>
+							<h6 class = "center">Вторник</h6>
+							<ul>
+								<li> Английский язык </li>
+								<li> Матан </li>
+								<li> Информатика</li>
+								<li> 15.50 физпракт </li>
+							</ul>
+							<hr>
+							<h6 class = "center">Среда</h6>
+							<ul>
+								<li> Геометрия </li>
+								<li> Русская литература/Экономика </li>
+								<li> Физика </li>
+								<li> ск матем/ ск физика </li>
+							</ul>
+							<hr>
+							<h6 class = "center">Четверг</h6>
+							<ul>
+								<li> Алгебра </li>
+								<li> Информатика / Физика </li>
+								<li> Информатика / Химия</li>
+								<li> Родная литература </li>
+							</ul>
+							<hr>
+							<h6 class = "center">Пятница</h6>
+							<ul>
+								<li> Русская литература / Физкультура</li>
+								<li> География / Матан </li>
+								<li> Русская литература / ОБЖ </li>
+								<li> История Якутии </li>
+							</ul>
+							<hr>
+							<h6 class = "center">Суббота</h6>
+							<ul>
+								<li> Физкультура</li>
+								<li> Общество </li>
+								<li> Биология / Английский Язык </li>
+							</ul>
+						</div>
+					</div>
+				</div>
+		    </main>
+		</div>
+	    <div class = "handheld_mode">
+	    	<header>
+	    		<a href="#" data-target="slide-out" class="sidenav-trigger" style="position: absolute; z-index: 100; top:19px; left: 25px" hidden><i class="material-icons white-text">menu</i></a>
+				<ul id="slide-out" class="sidenav">
+					<li>
+						<div class="user-view">
+						<div class="background">
+						<img src="/media/images/background.jpg">
+						</div>
+						<a href="#user"><img class="circle" src="/media/{{profile.photo}}" style="object-fit: cover; height: 120px;width: 120px"></a>
+						<a href="#name"><span class="white-text">{{profile.name}}</span></a><br>
+						<a href="#email"><span class="white-text">{{profile.user.email}}</span></a>
+						</div>
+					</li>
+
+					<li><a href="/profile/{{profile.id}}"> <i class = "material-icons left">home</i> Моя страница</a> </li>
+					<li><a href="/feed"> <i class = "material-icons left">dehaze</i> Лента </a></li>
+					<li><a href="/news"> <i class = "material-icons left">info</i> Новости </a></li>
+					<li><a href="/work"> <i class = "material-icons left">work</i> Вакансии </a></li>
+					<li><a href="/group"> <i class = "material-icons left">group</i>Группы </a></li>
+					<li><div class="divider"></div></li>
+					<li><a class="waves-effect" href="/logout"><i class = "material-icons left">exit_to_app</i>Выйти</a></li>
+				</ul>
+	    	</header>
+
+
+
+	    	<main>
+	    		
+	    		<div class = "container" style="margin-top: 10px">
+					<div class = "row " style="">
+						<div class = "col s12">
+							<div class = "row">
+								{% if user.profile.status == "moderator" %}
+									<div class = "col s12 white" style="border-radius: 1%; border:1px solid #ddd; margin-bottom: 10px">
+										<form action = "." method = "post">
+					    					{% csrf_token %}
+											<div class="row">
+												<div class="input-field col s12">
+												<textarea class="materialize-textarea" type = "text" name = "new_post_text" class="materialize-textarea"></textarea>
+												<label for="textarea1">Что расскажете?</label>
+												</div>
+
+												<input class="btn green right" type = "submit" name = "ok_button" value = "Отправить" style="margin-right: 10px">
+											</div>
+										</form>
+									</div>
+								{% endif %}
+
+								{% for post in posts%}
+									<div class = "col s12 white" style="border-radius: 1%; border:1px solid #ddd; margin-top: 10px; margin-bottom: 10px">
+										<div class = "row" style="margin-right: 10px;margin-left: 10px ">
+											<div class = "row" style=" margin-bottom: 0">
+												<div class = "row">
+													<div style="position: relative; width: 48px; float:left">
+														<img class = "right" src = "/media/images/goverment.jpg" style="width: 48px;height: 48px; border-radius: 100%; position: absolute; left:20px; top:13px; object-fit: cover;">
+													</div>
+													<div class = "col s7 left" style=" margin-left: 66px ">
+														<p>Правительство РЛ <br><font class = "grey-text left">{{post.data}}</font></p>
+													</div>
+													<div class = "col s3 right">
+														{% if profile.status == "moderator"%}
+															<form action = "." method="post">
+																{% csrf_token %}
+																<br>
+																<input type="text" name="post_id" value="{{post.id}}" style="display: none">
+																<input class="btn red right" type = "submit" name = "delete" value = "Удалить" style="min-width: 120px">
+															</form>
+														{% endif%}
+													</div>
+												</div>
+
+
+											</div>
+											<textarea class="materialize-textarea" readonly>{{post.text}}
+
+											</textarea>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+		    </main>
+		</div>
+
+		<script type="text/javascript">
+			$('.dropdown-button2').dropdown({
+			      inDuration: 300,
+			      outDuration: 225,
+			      constrain_width: false, // Does not change width of dropdown to that of the activator
+			      hover: true, // Activate on hover
+			      gutter: ($('.dropdown-content').width()*3)/2.5 + 5, // Spacing from edge
+			      belowOrigin: false, // Displays dropdown below the button
+			      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+			    }
+  			);
+
+			width=screen.width; // ширина  
+	    
+  			if(width < 768){
+		    	$(".screen_mode").css("display","none")
+		    	$(".handheld_mode").css("display","block")
+			}
+			else{
+				$(".screen_mode").css("display","block")
+		    	$(".handheld_mode").css("display","none")
+			}
+
+			$(document).ready(function(){
+			    $('.sidenav').sidenav();
+			  });
+		</script>
+    </body>
+
+    {% if error_message != None %}
+    	<script type="text/javascript">
+    		M.toast({html: '{{ error_message }}'})
+    	</script>
+    {% endif %}
+</html>
