@@ -1,0 +1,43 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html lang="ru">
+
+    <head>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title> Распознавание якутский букв </title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+    </head>
+
+    <body>
+    <header>
+        <nav>
+            <div class="nav-wrapper green" style="position: relative;">
+                <div class = "container">
+                    <a href="/" class="brand-logo">SaveYourLanguage</a>
+
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a class="dropdown-button" href="#!" data-activates="dropdown1" data-beloworigin="true" style="min-width: 150px;">{{ profile.name }} <i class="material-icons right"> arrow_drop_down </i></a></li>     
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <ul id="dropdown1" class="dropdown-content">
+            <li><a href="/profile/{{profile.id}}">Мой профиль</a></li>
+            <li class="divider"></li>
+            <li><a href="/settings">Редактировать</a></li>
+            <li><a href="#!">Настройки</a></li>
+            <li class="divider"></li>
+            <li><a href="/logout">Выйти</a></li>
+        </ul>
+
+    </header>

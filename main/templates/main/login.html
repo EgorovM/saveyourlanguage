@@ -1,0 +1,126 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html>
+	<head>
+        <meta charset= "utf-8">
+        <title>Республиканский лицей интернат</title>
+        
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+    </head>
+
+    <body>
+
+
+
+	    <div class = "screen_mode">
+	    	<header>
+				<nav>
+					<div class="nav-wrapper green">
+						<div class = "container">
+							<a href="/" class="brand-logo"> SaveYourLanguage</a>
+						</div>
+						</ul>
+					</div>
+				</nav>
+    		</header>
+    		<main>
+	    		<div class = "container row">
+	    			<div class = "col s3">
+	    				<form action = "." method = "post">
+	    					{% csrf_token %}
+							<div class = "row">
+								<div class="col s12">
+									<div class="form-group">
+										<p>Логин</p>
+										<input class="white form-control" name = "login" type="text" style = "border-radius: 4%; border: 1px">
+
+									</div>
+									<div class="form-group">
+										<p>Пароль</p>
+
+										<input class="white" name = "password" type="password" class="validate" style = "border-radius: 4%; border: 1px">
+									</div>
+									<p></p>
+									<input class="btn green" type = "submit" name = "ok_button" value = "Войти" style = "width: 100%;">
+									<p></p>
+									<input class="btn green" type = "submit" name = "register" value = "Регистрация" style = "width: 100%;">
+								</div>
+							</div>
+						</form>
+	    			</div>
+
+	    			<div class = "col s9">
+						<div class="row">
+							<div class = "white" style = "border-radius: 1%; border: 1px solid white; margin-top: 1rem">
+								<div class = "container">
+									<h4 style="text-align: center"> Сохранить свой язык - сохранить свой народ </h4>
+									<br>
+									<p> Во век цифровых технологий языки малочисленных народов постепенно исчезают. Поэтому мы начали проект, призванный сохранить родные языки народов. </p>
+									<p> Нужно заригестрироваться на данном сайте и добавить в нашу базу данных буквы из алфавита вашего народа. </p>
+									<p> Кроме того, проводится конкурс. Тому, кто напишет наибольшее количество якутских букв рассматривается приз. Итоги конкурса будут известны 1 февраля 2019 года. Примите участие в конкурсе и будьте на шаг к тому, чтобы наш народ Саха процветал. </p>
+								</div>
+							</div>
+						</div>
+	    			</div>
+	    		</div>		
+	    	</main>
+		</div>
+
+	    <div class = "handheld_mode">
+		    <br>
+			<main>
+	    		<div class = "container">
+		    		<div class = "row center">
+		    			<div class = "col s12">
+		    				<form action = "." method = "post">
+		    					{% csrf_token %}
+								<div class = "row">
+									<div class="col s12">
+										<div class="form-group">
+											<p>Логин</p>
+											<input class="white form-control" name = "login" type="text" style = "border-radius: 4%; border: 1px">
+
+										</div>
+										<div class="form-group">
+											<p>Пароль</p>
+
+											<input class="white" name = "password" type="password" class="validate" style = "border-radius: 4%; border: 1px">
+										</div>
+										<p></p>
+										<input class="btn green" type = "submit" name = "ok_button" value = "Войти" style = "width: 50%;">
+										<p></p>
+										<input class="btn green" type = "submit" name = "register" value = "Регистрация" style = "width: 50%;">
+									</div>
+								</div>
+							</form>
+		    			</div>
+		    		</div>		
+	    		</div>
+	    	</main>
+		</div>
+    </body>
+   
+   <script type="text/javascript">  
+	    width=screen.width; // ширина  
+	    
+	    if(width < 768){
+	    	$(".screen_mode").css("display","none")
+	    	$(".handheld_mode").css("display","block")
+		}
+		else{
+			$(".screen_mode").css("display","block")
+	    	$(".handheld_mode").css("display","none")
+		}
+	</script>
+	{% if error_message != None %}
+    	<script type="text/javascript">
+    		M.toast({html: '{{ error_message }}'})
+    	</script>
+    {% endif %}
+
+</html>

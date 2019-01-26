@@ -1,0 +1,113 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html>
+	<head>
+        <meta charset= "utf-8">
+        <title>SaveYourLanguage</title>
+        
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+    </head>
+
+    <body>
+
+
+
+	    <div class = "screen_mode">
+	    	<header>
+				<nav>
+					<div class="nav-wrapper green">
+						<div class = "container">
+							<a href="/" class="brand-logo">SaveYourLanguage</a>
+						</div>
+						</ul>
+					</div>
+				</nav>
+    		</header>
+    		<main>
+    			<div class = "container">
+    				<div class = "container">
+			    		<div class = "row">
+			    			<div class = "col s12">
+			    				<form action = "." method = "post">
+			    					{% csrf_token %}
+									<div class = "row">
+										<div class="col s12">
+											<div class="form-group">
+												<p>Логин</p>
+												<input class="white form-control" name = "username" type="text" style = "border-radius: 4%; border: 1px">
+
+											</div>
+											<div class="form-group">
+												<p>Пароль</p>
+
+												<input class="white" name = "password" type="password" class="validate" style = "border-radius: 4%; border: 1px">
+											</div>
+											<p></p>
+											<input class="btn green" type = "submit" name = "ok_button" value = "Регистрация" style = "width: 100%;">
+										</div>
+									</div>
+								</form>
+			    			</div>
+			    		</div>
+			    	</div>
+		    	</div>		
+		    </main>
+		</div>
+	    <div class = "handheld_mode">
+    		<main>
+    			<div class = "container">
+    				<div class = "container">
+			    		<div class = "row">
+			    			<div class = "col s12">
+			    				<form action = "." method = "post">
+			    					{% csrf_token %}
+									<div class = "row">
+										<div class="col s12">
+											<div class="form-group">
+												<p>Логин</p>
+												<input class="white form-control" name = "username" type="text" style = "border-radius: 4%; border: 1px">
+
+											</div>
+											<div class="form-group">
+												<p>Пароль</p>
+
+												<input class="white" name = "password" type="password" class="validate" style = "border-radius: 4%; border: 1px">
+											</div>
+											<p></p>
+											<input class="btn green" type = "submit" name = "ok_button" value = "Регистрация" style = "width: 100%;">
+										</div>
+									</div>
+								</form>
+			    			</div>
+			    		</div>
+			    	</div>
+		    	</div>		
+		    </main>
+		</div>
+    </body>
+   
+   <script type="text/javascript">  
+	    width=screen.width; // ширина  
+	    
+	    if(width < 768){
+	    	$(".screen_mode").css("display","none")
+	    	$(".handheld_mode").css("display","block")
+		}
+		else{
+			$(".screen_mode").css("display","block")
+	    	$(".handheld_mode").css("display","none")
+		}
+	</script>
+	
+	{% if error_message != None %}
+    	<script type="text/javascript">
+    		M.toast({html: '{{ error_message }}'})
+    	</script>
+    {% endif %}
+
+</html>
