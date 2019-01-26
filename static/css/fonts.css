@@ -1,0 +1,143 @@
+a{
+	font-family: 'Open Sans', sans-serif;
+}
+p{
+	font-family: 'Open Sans', sans-serif;
+}
+h1{
+	font-family: 'Open Sans', sans-serif;
+}
+h2{
+	font-family: 'Open Sans', sans-serif;
+}
+h3{
+	font-family: 'Open Sans', sans-serif;
+}
+h4{
+	font-family: 'Open Sans', sans-serif;
+}
+h5{
+	font-family: 'Open Sans', sans-serif;
+}
+h6{
+	font-family: 'Open Sans', sans-serif;
+}
+li{
+	font-family: 'Open Sans', sans-serif;
+}
+input{
+	font-family: 'Open Sans', sans-serif;
+
+}
+
+.wall{
+	background-color: white;
+	border: solid 2px;
+}
+.dropdown-content{
+    overflow: visible !important;
+}
+
+
+body {
+	background-color: #fafafa;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+ }
+ 
+ main {
+    flex: 1 0 auto;
+ }
+
+.vline{
+	border-left: 1px solid grey;
+}
+
+.indicator{
+	height: 0;
+	color: #fff;
+}
+
+
+@media handheld {
+
+	.screen_mode {
+		display: none;
+	}
+
+	.handheld_mode {
+		display: block;
+	}
+
+	.aside {
+		width: 94%;
+		padding: 3%;        
+	}
+	.container {
+		width: 94%;
+		padding: 3%;
+		}
+	a{
+		font-family: 'Open Sans', sans-serif;
+		font-size:16px;
+		line-height: 1em;
+
+	}
+	p{
+		font-family: 'Open Sans', sans-serif;
+		font-size:16px;
+		line-height: 1em;
+	}
+	h1{
+		font-family: 'Open Sans', sans-serif;
+		font-size:28px;
+		line-height: 1em;
+	}
+	h2{
+		font-family: 'Open Sans', sans-serif;
+		font-size:26px;
+		line-height: 1em;
+	}
+	h3{
+		font-family: 'Open Sans', sans-serif;
+		font-size:24px;
+		line-height: 1em;
+	}
+	h4{
+		font-family: 'Open Sans', sans-serif;
+		font-size:22px;
+		line-height: 1em;
+	}
+	h5{
+		font-family: 'Open Sans', sans-serif;
+		font-size:20px;
+		line-height: 1em;
+	}
+	h6{
+		font-family: 'Open Sans', sans-serif;
+		font-size:18px;
+		line-height: 1em;
+	}
+	li{
+		font-family: 'Open Sans', sans-serif;
+		font-size:16px;
+		line-height: 1em;
+	}
+	input{
+		font-family: 'Open Sans', sans-serif;
+		font-size:16px;
+		line-height: 1em;
+	}
+
+}
+
+@media screen{
+	.handheld_mode{
+		display: none;
+	}
+	.about_image{
+		padding: 9% 0;
+	}
+}
+

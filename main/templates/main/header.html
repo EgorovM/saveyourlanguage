@@ -1,0 +1,46 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html>
+	<head>
+        <meta charset= "utf-8">
+        <title>Республиканский лицей интернат</title>
+
+        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+        
+    </head>
+
+    <body>
+        <header>
+            <nav>
+                <div class="nav-wrapper teal">
+                    <a href="/" class="brand-logo">&nbsp;SaveYourLanguage</a>
+
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a href="/monitoring"> Участовать! </a></li>
+                        <li><a href="/about"> О проекте</a></li>
+                    </ul>
+
+                    <a href="#" data-target="slide-out" class="sidenav-trigger right"><i class="material-icons white-text">menu</i>&nbsp;</a>
+                </div>
+            </nav>
+
+            <ul id="slide-out" class="sidenav">
+                <br>
+                <li> <a class="waves-effect" href="/monitoring"><i class="material-icons teal-text">search</i>Мониторинг</a></li>
+                <li> <a class="waves-effect" href="/information"><i class="material-icons teal-text">people</i>Сведения</a></li>
+                <li><div class="divider"></div></li>
+                <li><a class="waves-effect" href="/about"> <i class="material-icons teal-text">info_outline</i>О продукте</a>
+                </li>
+            </ul>
+
+        </header>
+
+        <br>
+
+        <main>
