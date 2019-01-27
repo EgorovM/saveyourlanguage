@@ -104,71 +104,6 @@ def profile(request,profile_id):
 
 	return response
 
-def news(request):
-	error_message = None
-	if not request.user.is_authenticated():
-		return redirect('login')
-		
-	if request.method == "POST":
-		if "ok_button" in request.POST:
-			new_post_text = request.POST["new_post_text"]
-			if new_post_text == "":
-				error_message = "Напишите что-нибудь"
-			else:
-				post = Post()
-				post.data   = timezone.now()
-				post.text   = new_post_text
-				post.author = request.user.profile
-				post.status = "news"
-				post.save()
-
-		if "delete" in request.POST:
-			post = Post.objects.get(id = request.POST["post_id"])
-			post.delete()
-
-			return HttpResponseRedirect('/news')
-
-	posts   = Post.objects.filter(status = "news")[::-1]
-	context = {"profile":request.user.profile, "posts": posts}
-	context["error_message"] = error_message
-	response = render(request, 'main/news.html',context)
-
-	return response
-
-def work(request):
-	error_message = None
-
-	if not request.user.is_authenticated():
-		return redirect('login')
-
-	if request.method == "POST":
-		if "ok_button" in request.POST:
-			new_post_text = request.POST["new_post_text"]
-
-			if new_post_text == "":
-				error_message = "Напишите что-нибудь"
-			else:
-				post = Post()
-				post.data   = timezone.now()
-				post.text   = new_post_text
-				post.author = request.user.profile
-				post.status = "work"
-				post.save()
-
-		if "delete" in request.POST:
-			post = Post.objects.get(id = request.POST["post_id"])
-			post.delete()
-
-			return HttpResponseRedirect('/work')
-
-	posts   = Post.objects.filter(status = "work")[::-1]
-
-	context = {"profile":request.user.profile, "posts": posts, "error_message": error_message}
-
-	response = render(request, 'main/work.html',context)
-
-	return response
-
 def settings(request):
 	if not request.user.is_authenticated():
 		return redirect('login')
@@ -296,6 +231,7 @@ def register(request):
 
 			username = request.POST["username"]
 			password = request.POST["password"]
+			name     = request.POST["name"]
 
 			if username !='' and password !='':
 				if  len(password) < 8:
@@ -311,13 +247,14 @@ def register(request):
 						return response
 
 					profile = Profile(user = user)
+					profile.name = name
 					profile.save()      
 
 					user = authenticate(username = username, password = password)
 
 					if user is not None and user.is_active:
 						auth.login(request, user)
-						return HttpResponseRedirect("/settings")
+						return HttpResponseRedirect("/")
 					else:
 						error_message = "Пользователь уже существует"
 						context["error_message"] = error_message
