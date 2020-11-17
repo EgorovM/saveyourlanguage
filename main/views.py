@@ -10,36 +10,92 @@ from django.contrib 			import auth
 from django.utils 				import timezone
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
 import datetime
 import json
 from io import StringIO
 import threading
 import base64
+from django.conf import settings
 import time
+import os
+
+import tensorflow as tf
+import cv2
+import numpy as np
+import glob
+
 
 AVATAR_SIZE  = (254, 169)
 PICTURE_SIZE = (500, 500)
 
+ALL_LETTERS = ['Б', 'Ф', 'Ж', 'У', 'Ъ', 'П', 'Э', 'И', 'Ь', 'Ы', 'О', 'З', 'Ү',
+               'Т', 'А', 'Х', 'Ё', 'Й', '-', 'h', 'Е', 'Р', 'В', 'Ч', 'Ю', 'Л',
+               'Щ', 'М', 'Ш', 'Н', 'ҥ', 'ө', 'Я', 'К', 'Г', 'Ц', 'Д', 'С', 'Ҕ']
+
+model = tf.keras.models.load_model(settings.BASE_DIR + '/sakhaREC.h5')
+
+
+def prepare_image(way):
+    img = cv2.imread(way)
+    img_gray = (255 - cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
+
+    return cv2.resize(img_gray / 255, (28, 28))
+
+
+def predict(rec):
+    rec = 1 - rec
+    print(rec.mean())
+
+    pred = list(model.predict(np.reshape(rec, (-1, 28, 28)))[0])
+    max_prob = max(pred)
+
+    print(max_prob)
+    return ALL_LETTERS[pred.index(max_prob)]
+
+
 def ajax(request):
-	if request.method == 'POST': # and request.FILES['image']:
-		image_data = request.POST['image']
-		letter     = request.POST['letter']
+    context = {}
 
-		format, imgstr = image_data.split(';base64,')
-		ext = format.split('/')[-1]
-		data = ContentFile(base64.b64decode(imgstr))
-		myfile = letter + "/" + str(request.user.profile.name) + "-"+time.strftime("%Y%m%d-%H%M%S")+"." + ext
-		fs = FileSystemStorage()
-		filename = fs.save(myfile, data)
+    if request.method == 'POST': # and request.FILES['image']:
+        image_data = request.POST['image']
+        letter     = request.POST['letter']
+        save = request.POST.get('save', False)
+        print(save, type(save), save=='false')
+        profile = Profile.objects.get(user = request.user)
+        profile.score += 1
+        profile.save()
 
-		profile = Profile.objects.get(user = request.user)
-		profile.score += 1
-		profile.save()
+        format, imgstr = image_data.split(';base64,')
+        ext = format.split('/')[-1]
+        data = ContentFile(base64.b64decode(imgstr))
+        myfile = letter + "/" + str(profile.name) + "-"+time.strftime("%Y%m%d-%H%M%S")+"." + ext
+        fs = FileSystemStorage()
+        filename = fs.save(myfile, data)
 
-	request = render(request, 'main/index.html')
+        rec = prepare_image('media/' + myfile)
 
-	return request
-    
+        img = Image(
+        	way=myfile,
+        	author=profile.name,
+        	letter=letter,
+        )
+
+        predicted_letter = predict(rec)
+
+        if save == 'false':
+            print('delete...')
+            os.remove(os.path.join(settings.MEDIA_ROOT, img.way))
+        else:
+            img.save()
+
+
+        return JsonResponse({"letter": predicted_letter, "ok": predicted_letter == letter})
+
+    request = render(request, 'main/index.html', context)
+
+    return request
+
 
 def resizeImage(file, size):
 	imagefile  = StringIO.StringIO(file.read())
@@ -54,147 +110,43 @@ def resizeImage(file, size):
 
 	return file
 
+
 def index(request):
-	if request.user.is_authenticated():
-		profile = request.user.profile
-	else:
-		return redirect('login')
+    if request.user.is_authenticated:
+    	profile = Profile.objects.get(user=request.user)
+    else:
+    	return redirect('login')
 
-	context = {"profile": profile}
+    context = {"profile": profile}
 
-	response = render(request, 'main/index.html',context)
+    response = render(request, 'main/index.html',context)
 
-	return response
+    return response
 
-def profile(request,profile_id):
-	if not request.user.is_authenticated():
-		return redirect('login')
 
-	error_message = None
-
-	profile = Profile.objects.get(id = profile_id)
+def check(request):
+	data = {}
+	images = Image.objects.filter(label=0)
+	data["images"] = images
 
 	if request.method == "POST":
-		if "ok_button" in request.POST:
-			new_post_text = request.POST["new_post_text"]
+		img_id = request.POST["id"]
+		img = Image.objects.get(id = img_id)
 
-			if new_post_text == "":
-				error_message = "Напишите что-нибудь"
-			else:
-				post = Post()
-				post.data   = timezone.now()
-				post.text   = new_post_text
-				post.author = request.user.profile
-				post.status = "post"
-				post.save()
+		if "ok" in request.POST:
+			img.label = 1
+			img.save()
+		if "not" in request.POST:
+			os.remove(os.path.join(settings.MEDIA_ROOT, img.way))
+			img.delete()
 
-		if "delete" in request.POST:
-			post = Post.objects.get(id = request.POST["post_id"])
-			post.delete()
+	return render(request, 'main/check.html', data)
 
-			return HttpResponseRedirect('.')
-
-	posts   = Post.objects.filter(author = profile, status = "post")[::-1]
-	context = {"posts": posts}
-
-	context["profile"]       = request.user.profile
-	context["view_profile"]  = profile
-	context["error_message"] = error_message
-	response = render(request, 'main/profile.html',context)
-
-	return response
-
-def settings(request):
-	if not request.user.is_authenticated():
-		return redirect('login')
-
-	error_message = None
-
-	context = {"profile":request.user.profile,}
-
-	if request.method == "POST":
-		if "ok_button" in request.POST:
-			new_name  	  = request.POST["name"]
-			new_email 	  = request.POST["email"]
-			new_telephone = request.POST["telephone"]
-
-			profile = Profile.objects.get(user = request.user)
-
-			profile.name  	        = new_name
-			profile.user.email      = new_email
-			profile.telephone       = new_telephone
-
-			profile.save()
-			profile.user.save()
-
-	response = render(request, 'main/index.html',context)
-
-	return response
-
-
-def picture(request):
-
-	if not request.user.is_authenticated():
-		return redirect('login')
-
-	error_message = None
-
-	context = {"profile":request.user.profile,}
-
-	if request.method == "POST":
-		if "ok_button" in request.POST:
-			profile = Profile.objects.get(user = request.user)
-
-			new_image = ""
-
-			if "image" in request.FILES:
-				new_image = request.FILES["image"]
-				profile.photo = new_image
-				profile.save()
-
-				return HttpResponseRedirect(".")
-			else:
-				error_message = "Нет"
-				context["error_message"] = error_message
-
-	response = render(request, 'main/picture.html',context)
-
-	return response
-
-def group(request):
-	if not request.user.is_authenticated():
-		return redirect('login')
-		
-	context = {}
-
-	context["profile"] = request.user.profile
-
-	twelfth_hum = Profile.objects.filter(grade = "11ГУМ")
-	context["twelfth_hum"] = twelfth_hum
-
-	twelfth_biochem = Profile.objects.filter(grade = "11БХ")
-	context["twelfth_biochem"] = twelfth_biochem
-
-	twelfth_politech = Profile.objects.filter(grade = "11ПТХ")
-	context["twelfth_politech"] = twelfth_politech
-
-	twelfth_tech = Profile.objects.filter(grade = "11ТЕХ")
-	context["twelfth_tech"] = twelfth_tech
-
-	twelfth_engeneer = Profile.objects.filter(grade = "11ИНЖ")
-	context["twelfth_engeneer"] = twelfth_engeneer
-
-	twelfth_physmath = Profile.objects.filter(grade = "11ФМ")
-	context["twelfth_physmath"] = twelfth_physmath
-
-	response = render(request, 'main/group.html',context)
-
-	return response
 
 def login(request):
-	if request.user.is_authenticated():
+	if request.user.is_authenticated:
 		return redirect('/')
-		
+
 
 	false_message = None
 
@@ -222,6 +174,15 @@ def login(request):
 
 	return response
 
+
+def for_children(request):
+    ALL_LETTERS = list(map(lambda x: x[-1:], glob.glob("../handmade/*")))
+
+    response = render(request, 'main/for_children.html', locals())
+
+    return response
+
+
 def register(request):
 	error_message = None
 	context = {}
@@ -248,7 +209,7 @@ def register(request):
 
 					profile = Profile(user = user)
 					profile.name = name
-					profile.save()      
+					profile.save()
 
 					user = authenticate(username = username, password = password)
 

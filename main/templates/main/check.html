@@ -1,0 +1,26 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div>
+
+      {% for image in images %}
+        <form active='' method="post">
+          {% csrf_token %}
+          <h3> {{image.letter}} {{image.id}}</h3>
+          <img src="/media/{{image.way}}" width="150px">
+          <p> {{image.author}} </p>
+          <input name = "id" type="text" value="{{image.id}}" hidden>
+          <button type="select" name = "ok"> ОК </button>
+          <button type="select" name = "not"> NO </button>
+        </form>
+      {% endfor %}
+
+    </div>
+  </body>
+</html>

@@ -1,181 +1,195 @@
-{% load staticfiles %}
+{% load static %}
 <!DOCTYPE html>
 
 <html lang="ru">
 
-    <head>
-        <!-- Meta -->
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title> Распознавание якутский букв </title>
+<head>
+  <!-- Meta -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Распознавание якутский букв </title>
 
-        <!-- CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-        <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
-    </head>
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+  <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+</head>
 
-    <body>
-    <header>
-        <nav>
-            <div class="nav-wrapper green" style="position: relative;">
-                <div class = "container">
-                    <a href="/" class="brand-logo">SaveYourLanguage</a>
+<body>
+  <header>
+    <nav>
+      <div class="nav-wrapper green" style="position: relative;">
+        <div class="container">
+          <a href="/" class="brand-logo">SaveYourLanguage</a>
 
-                    <ul id="nav-mobile" class="right hide-on-med-and-down"> 
-                        <li><a class="dropdown-button" href="/logout" data-activates="dropdown1" data-beloworigin="true">Выйти</a></li>     
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <ul id="dropdown1" class="dropdown-content">
-            <li><a href="/profile/{{profile.id}}">Мой профиль</a></li>
-            <li class="divider"></li>
-            <li><a href="/settings">Редактировать</a></li>
-            <li><a href="#!">Настройки</a></li>
-            <li class="divider"></li>
-            <li><a href="/logout">Выйти</a></li>
-        </ul>
-
-    </header>
-
-	<br>
-    <div class="container">
-      <div class="row">
-        <div id="canvas-div" class="col s12 m5 center">
-        	<br>
-        	<p> Ваш результат : {{profile.score}} </p>
-          <canvas id="canvas" width="364" height="364"></canvas>
-        </div>
-
-        <div class = "col s12 m7">
-        	<h3> Сахалыы буукубалар</h3>
-        	Напишите букву: <span id = "letter">h</span>
-
-        	<div class = "row" style="margin-left: 2px">
-        		<button class = "btn btn-success" id = "predict" onClick="download()"> Дальше </button>
-        	</div>
-        	<br>
-
-        	<h3 class="red-text"> Внимание! </h3>
-        	<p> Если мы обнаружим более 50 не соответствующих букве результатов, то мы можем не допустить вас к конкурсу </p>
-        	<div class = "result">
-        	</div>
-
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a class="dropdown-button" href="/">Главная</a></li>
+            <li><a class="dropdown-button" href="/for_children">Правописание</a></li>
+            <li><a class="dropdown-button" href="/logout" data-activates="dropdown1" data-beloworigin="true">Выйти</a></li>
+          </ul>
         </div>
       </div>
+    </nav>
+
+    <ul id="dropdown1" class="dropdown-content">
+      <li><a href="/profile/{{profile.id}}">Мой профиль</a></li>
+      <li class="divider"></li>
+      <li><a href="/settings">Редактировать</a></li>
+      <li><a href="#!">Настройки</a></li>
+      <li class="divider"></li>
+      <li><a href="/logout">Выйти</a></li>
+    </ul>
+
+  </header>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div id="canvas-div" class="col s12 m5 center">
+        <br>
+        <p> Ваш результат : <span id="score">{{profile.score}}</span> </p>
+        <p class="maybe"></p>
+        <p class="warning" style='color:red'></p>
+        <canvas id="canvas" width="364" height="364"></canvas>
+      </div>
+
+      <div class="col s12 m7">
+        <h3> Сахалыы буукубалар</h3>
+        Напишите букву: <span id="letter" style="font-size: 60px"></span>
+
+        <div class="row" style="margin-left: 2px">
+          <button class="btn btn-success" id="predict" onClick="download(false)"> Проверка </button>
+          <button class="btn btn-success" id="predict" onClick="download(true)"> Сохранить </button>
+        </div>
+        <br>
+
+        <h3 class="red-text"> Внимание! </h3>
+        <p> Если мы обнаружим более 50 не соответствующих букве результатов, то мы можем не допустить вас к конкурсу </p>
+        <div class="result">
+        </div>
+
+      </div>
     </div>
+  </div>
 
-    <!-- Javascript -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="{% static 'js/fabric.min.js' %}"></script>
-    <script src="{% static 'js/custom.js' %}"></script>
-    <script src="{% static 'js/jquery.cookie.js' %}"></script>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
+  <!-- Javascript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="{% static 'js/fabric.min.js' %}"></script>
+  <script src="{% static 'js/custom.js' %}"></script>
+  <script src="{% static 'js/jquery.cookie.js' %}"></script>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
 
 
-    <script type="text/javascript">
-    	var letters = ["ү","һ","Ң","Ҕ","Ѳ"];
+  <script type="text/javascript">
+    //var letters = ["ү","h","Ң","Ҕ","ө", "А"];
+    //var letters = ['Б', 'М', 'Ф', 'Ж', 'У', 'Ъ', 'П', 'Э', 'И', 'Ь', 'Ы', 'О', 'З', 'Ү', 'Т', 'А', 'Х', 'Ё', 'Й', 'h', 'Е', 'Р', 'В', 'Ч', 'Ю', 'Л', 'Щ', 'М', 'Ш', 'Н', 'ҥ', 'ө', 'Я', 'К', 'Г', 'Ц', 'Д', 'С', 'Ҕ'];
+    var letters = ['Ң']
 
-    	function getCookie(name) {
-		    var cookieValue = null;
-		    if (document.cookie && document.cookie != '') {
-		        var cookies = document.cookie.split(';');
-		        for (var i = 0; i < cookies.length; i++) {
-		            var cookie = jQuery.trim(cookies[i]);
-		            // Does this cookie string begin with the name we want?
-		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-		                break;
-		            }
-		        }
-		    }
-		    return cookieValue;
-		}
-		var csrftoken = getCookie('csrftoken');
-
-		function csrfSafeMethod(method) {
-		    // these HTTP methods do not require CSRF protection
-		    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-		}
-
-		$.ajaxSetup({
-		    beforeSend: function(xhr, settings) {
-		        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-		            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-		        }
-		    }
-		});
-		function clearcanv(){ 
-		  canvas.clear(); 
-		  canvas.backgroundColor = "#ffffff";
-		  canvas.renderAll();
-		};
-
-		function changeletter(){
-			var letter = Math.floor(Math.random() * letters.length);
-			$('#letter').text(letters[letter]);
-		}
-
-        function download(){
-        	var canvas=document.getElementById("canvas");
-			var dataUrl=canvas.toDataURL();
-			var letter = $('#letter').text();
-			console.log(dataUrl);
-            $.ajax({
-            	url: "/ajax/",
-				type: "POST",
-				data: {image: dataUrl,letter: letter}
-			})
-			.done(function(respond){console.log("done: ");})
-			.fail(function(respond){console.log("fail");})
-			.always(function(respond){console.log("always");})
-
-			changeletter();
-			clearcanv(); 
-			
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = jQuery.trim(cookies[i]);
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
+      }
+      return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
 
-        $(".profile_photo").attr("width",$(".profile_content").width()-20)
-			$(".profile_photo").attr("height",$(".profile_content").width()-20)
-			$('.dropdown-button2').dropdown({
-			      inDuration: 300,
-			      outDuration: 225,
-			      constrain_width: false, // Does not change width of dropdown to that of the activator
-			      hover: true, // Activate on hover
-			      gutter: ($('.dropdown-content').width()*3)/2.5 + 5, // Spacing from edge
-			      belowOrigin: false, // Displays dropdown below the button
-			      alignment: 'left' // Displays dropdown with edge aligned to the left of button
-			    }
-  			);
-  			width=screen.width; // ширина  
-	    
-  			if(width < 768){
-		    	$(".screen_mode").css("display","none")
-		    	$(".handheld_mode").css("display","block")
-			}
-			else{
-				$(".screen_mode").css("display","block")
-		    	$(".handheld_mode").css("display","none")
-			}
+    function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
 
-			$(document).ready(function(){
-			    $('.sidenav').sidenav();
-			  });
-    </script>
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      }
+    });
 
-    </body>
-    {% if error_message != None %}
-    	<script type="text/javascript">
-    		M.toast({html: '{{ error_message }}'})
-    	</script>
-    {% endif %}
+    function clearcanv() {
+      canvas.clear();
+      canvas.backgroundColor = "#ffffff";
+      canvas.renderAll();
+    };
+
+    function changeletter() {
+      var letter = Math.floor(Math.random() * letters.length);
+      $('#letter').text(letters[letter]);
+    }
+    changeletter()
+
+    function download(save) {
+      var canvas = document.getElementById("canvas");
+      var dataUrl = canvas.toDataURL();
+      var letter = $('#letter').text();
+
+      $('#score').text(parseInt($('#score').text()) + 1);
+
+      console.log(dataUrl);
+      $.ajax({
+          url: "/ajax/",
+          type: "POST",
+          data: {
+            image: dataUrl,
+            letter: letter,
+            save: save
+          }
+        })
+        .done(function(respond) {
+          $('.maybe').html("Вы возможно ввели: " + respond["letter"]);
+
+          if (!respond["ok"]) {
+            $('.warning').html('Введите пожалуйста корректную букву');
+          } else {
+            $('.warning').html('')
+          }
+        })
+        .fail(function(respond) {
+          console.log("fail");
+        })
+        .always(function(respond) {
+          console.log(respond);
+        })
+
+      changeletter();
+      clearcanv();
+    }
+
+    document.body.onkeyup = function(e) {
+      console.log(e.keyCode)
+
+      if (e.keyCode == 32) {
+        download(true);
+      }
+      else if(e.keyCode == 67) {
+        download(false);
+      }
+    }
+  </script>
+
 </body>
+{% if error_message != None %}
+<script type="text/javascript">
+  M.toast({
+    html: '{{ error_message }}'
+  })
+</script>
+{% endif %}
+</body>
+
 </html>
